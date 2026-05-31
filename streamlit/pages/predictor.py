@@ -17,6 +17,29 @@ if "logged_in" not in st.session_state or not st.session_state.logged_in:
     st.warning("Please login from the main page.")
     st.stop()
 
+st.markdown("""
+<style>
+.stApp { background-color:#82B1A3; }
+div[data-testid="stCaptionContainer"] { color:black !important; font-weight:600; }
+[data-testid="stMetric"] { background-color:#61867B; padding:15px; border-radius:10px; text-align:center; box-shadow:4px 4px 10px rgba(100,13,13,0.25); }
+[data-testid="stMetricLabel"] { color:white; font-weight:600; }
+[data-testid="stMetricValue"] { color:white; font-weight:bold; }
+h1,h2,h3 { color:black; font-weight:bold; }
+section[data-testid="stSidebar"] { background-color:#61867B; }
+div[data-baseweb="select"] > div { background-color:#82B1A3 !important; border:2px solid #3D4F4A !important; color:black !important; }
+span[data-baseweb="tag"] { background-color:#3D4F4A !important; color:white !important; }
+label { color:white !important; font-weight:bold; }
+div[role="listbox"] { background-color:#61867B !important; color:white !important; }
+div[role="option"] { background-color:#61867B !important; color:white !important; }
+div[role="option"]:hover { background-color:#3D4F4A !important; }
+div[aria-selected="true"] { background-color:#3D4F4A !important; color:white !important; }
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #82B1A3; }
+::-webkit-scrollbar-thumb { background: #3D4F4A; border-radius: 10px; }
+::-webkit-scrollbar-thumb:hover { background: #640D0D; }
+</style>
+""", unsafe_allow_html=True)
+
 BASE_DIR = Path(__file__).parent.parent
 
 @st.cache_resource
