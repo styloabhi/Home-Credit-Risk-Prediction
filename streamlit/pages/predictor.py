@@ -177,12 +177,55 @@ if st.button("Predict Default Risk", use_container_width=True):
     gauge.update_layout(paper_bgcolor="#82B1A3", font=dict(color="black"))
     st.plotly_chart(gauge, use_container_width=True)
 
+    st.subheader("Credit Recommendation")
+
     if probability >= 0.60:
-        st.error("❌ High Risk — Reject or enhanced review. Reduce credit limit. Stricter monitoring.")
+        st.error(f"""
+            ❌ **High Risk Customer** — Default Probability: {probability*100:.1f}%
+
+            **Immediate Actions:**
+            - Reject application or escalate for senior credit review
+            - Request 3 months of bank statements and income proof
+            - Reduce approved credit limit by minimum 40%
+            - Apply enhanced KYC verification
+
+            **Monitoring Requirements:**
+            - Weekly account monitoring for first 6 months
+            - Mandatory repayment reminders 3 days before due date
+            - Flag for early warning system
+            """)
+
     elif probability >= 0.30:
-        st.warning("⚠️ Medium Risk — Conditional approval. Moderate limit. Monitor repayment.")
+        st.warning(f"""
+            ⚠️ **Medium Risk Customer** — Default Probability: {probability*100:.1f}%
+
+            **Recommended Actions:**
+            - Conditional approval with reduced credit limit
+            - Request additional income documentation
+            - Set up automatic payment reminders
+            - Review after 3 months of repayment history
+
+            **Monitoring Requirements:**
+            - Monthly account review
+            - Alert if payment delayed by more than 5 days
+            - Re-assess risk score after 6 months
+            """)
+
     else:
-        st.success("✅ Low Risk — Approve. Eligible for standard products. Consider premium offers.")
+        st.success(f"""
+            ✅ **Low Risk Customer** — Default Probability: {probability*100:.1f}%
+
+            **Recommended Actions:**
+            - Approve application at requested credit limit
+            - Eligible for all standard credit products
+            - Consider pre-approved offers for additional products
+            - Suitable for loyalty and premium programs
+
+            **Growth Opportunity:**
+            - Offer credit limit increase after 6 months
+            - Cross-sell insurance or investment products
+            - Priority customer service tier
+            """)
 
     st.subheader("Key Customer Information")
 
