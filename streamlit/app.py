@@ -1110,7 +1110,7 @@ with tab4:
 
     if st.button("Predict Default Risk", use_container_width=True):
 
-        X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore")
+        X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore").copy()
     
         # convert category dtype back to string to avoid CatBoost error
         for col in X.select_dtypes(include='category').columns:
