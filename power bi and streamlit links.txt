@@ -1,1 +1,3 @@
 https://app.powerbi.com/groups/me/reports/5e0372e5-a8b8-4cae-863b-8c4a51ab5786/d28530cfff6bb546c1ca?experience=power-bi
+https://home-credit-risk-prediction.streamlit.app/
+https://github.com/styloabhi/Home-Credit-Risk-Prediction/tree/main

@@ -1124,7 +1124,6 @@ with tab4:
         X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore")
 
         missing_cols = [col for col in feature_cols if col not in X.columns]
-        st.write(f"✅ Step 3: Missing cols = {len(missing_cols)}")
 
         if missing_cols:
             st.error(f"Missing {len(missing_cols)} model features.")
@@ -1133,15 +1132,15 @@ with tab4:
         X = X[feature_cols]
 
         try:
-            st.write("⏳ Step 5: Running CatBoost...")
+            st.write("⏳ Step 1: Running CatBoost...")
             cat_raw = cat_model.predict_proba(X)
             cat_prob = float(np.array(cat_raw).flatten()[1])
 
-            st.write("⏳ Step 6: Running LightGBM...")
+            st.write("⏳ Step 2: Running LightGBM...")
             lgb_raw = lgb_model.predict_proba(X)
             lgb_prob = float(np.array(lgb_raw).flatten()[1])
 
-            st.write("⏳ Step 7: Running XGBoost...")
+            st.write("⏳ Step 3: Running XGBoost...")
             xgb_raw = xgb_model.predict_proba(X)
             xgb_prob = float(np.array(xgb_raw).flatten()[1])
 
@@ -1150,7 +1149,7 @@ with tab4:
             st.exception(e)
             st.stop()
 
-        st.write("✅ Step 8: All models done")
+        st.write("✅ All models done")
 
         probability = (
             cat_prob * ensemble_info["cat_weight"]
