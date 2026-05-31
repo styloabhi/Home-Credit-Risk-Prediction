@@ -281,8 +281,12 @@ def load_data():
 
 
 
+try:
+    train, test = load_data()
+except Exception as e:
+    st.error(f"Data loading failed:{e}")
+    st.stop()
 
-train, test = load_data()
 train["RISK_SEGMENT"] = np.where(
     train['EXT_SOURCE_MEAN']<0.4, "High Risk",
     np.where(
@@ -334,7 +338,8 @@ def load_models():
         model_metrics
     )
 
-(
+try:
+    (
     cat_model,
     lgb_model,
     xgb_model,
@@ -342,8 +347,9 @@ def load_models():
     ensemble_info,
     encoders,
     model_metrics
-) = load_models()
-
+    ) = load_models()
+except Exception as e:
+    st.error(f"Model loading failed: {e}")
 
 test=test.copy()
 for col, encoder in encoders.items():
@@ -817,148 +823,148 @@ with tab2:
     fig_deliquency=apply_theme(fig_deliquency)
     st.plotly_chart(fig_deliquency,use_container_width=True)
 
-    with tab3:
-        st.header("Portfolio Manager Dashboard")
-        p1,p2,p3,p4,p5,p6= st.columns(6)
-        with p1:
-            st.metric(
-                "Total Portfolio Exposure",
-                millify(exec_df['AMT_CREDIT'].sum())
+with tab3:
+    st.header("Portfolio Manager Dashboard")
+    p1,p2,p3,p4,p5,p6= st.columns(6)
+    with p1:
+        st.metric(
+            "Total Portfolio Exposure",
+            millify(exec_df['AMT_CREDIT'].sum())
+        )
+    with p2:
+        st.metric(
+            "Avg Loan Amount",
+            millify(exec_df["AMT_CREDIT"].mean())
+        )
+    with p3:
+        st.metric(
+            "Avg Installment Amount",
+            millify(exec_df['AMT_ANNUITY'].mean())
+        )
+    with p4:
+        st.metric(
+            "High Risk Exposure %",
+            round(
+                exec_df.loc[
+                    exec_df['RISK_SEGMENT']=='High Risk',
+                    "AMT_CREDIT"
+                ].sum()/
+                exec_df['AMT_CREDIT'].sum()*100,
+                2
             )
-        with p2:
-            st.metric(
-                "Avg Loan Amount",
-                millify(exec_df["AMT_CREDIT"].mean())
-            )
-        with p3:
-            st.metric(
-                "Avg Installment Amount",
-                millify(exec_df['AMT_ANNUITY'].mean())
-            )
-        with p4:
-            st.metric(
-                "High Risk Exposure %",
-                round(
-                    exec_df.loc[
-                        exec_df['RISK_SEGMENT']=='High Risk',
-                        "AMT_CREDIT"
-                    ].sum()/
-                    exec_df['AMT_CREDIT'].sum()*100,
-                    2
-                )
-            )
-
-        with p5:
-            st.metric(
-                "Avg Loan to Income",
-                round(exec_df['LOAN_TO_INCOME'].mean(),2)
-            )
-        with p6:
-            st.metric(
-                "Portfolio At Risk %",
-                round(
-                    (exec_df['TARGET']==1).mean()*100,2
-                )
-            )
-        st.divider()
-
-        ### visuals
-        # avg loan to income by income type
-        LN= exec_df[exec_df['LOAN_TO_INCOME'].notna()].copy()
-        loan_income= (
-            LN.groupby(
-                "NAME_INCOME_TYPE",
-                observed=False
-            )['LOAN_TO_INCOME']
-            .mean()
-            .sort_values()
-            .reset_index()
         )
 
-        fig_lti = px.bar(
-            loan_income,
-            x="LOAN_TO_INCOME",
-            y="NAME_INCOME_TYPE",
-            orientation="h",
-            title="Avg Loan To Income by Type",
-            color_discrete_sequence=["#3D4F4A"])
-
-        fig_lti = apply_theme(fig_lti)
-
-        st.plotly_chart(
-            fig_lti,
-            use_container_width=True
+    with p5:
+        st.metric(
+            "Avg Loan to Income",
+            round(exec_df['LOAN_TO_INCOME'].mean(),2)
         )
+    with p6:
+        st.metric(
+            "Portfolio At Risk %",
+            round(
+                (exec_df['TARGET']==1).mean()*100,2
+            )
+        )
+    st.divider()
 
-        ## Exposure by Loan Type
-
-        loan_exposure = (
-        exec_df.groupby(
-            "NAME_CONTRACT_TYPE",
+    ### visuals
+    # avg loan to income by income type
+    LN= exec_df[exec_df['LOAN_TO_INCOME'].notna()].copy()
+    loan_income= (
+        LN.groupby(
+            "NAME_INCOME_TYPE",
             observed=False
-        )["AMT_CREDIT"]
-        .sum()
+        )['LOAN_TO_INCOME']
+        .mean()
+        .sort_values()
         .reset_index()
-        )
+    )
 
-        fig_loan = px.pie(
-            loan_exposure,
-            names="NAME_CONTRACT_TYPE",
-            values="AMT_CREDIT",
-            hole=0.6,
-            title="Exposure by Loan Type",
-            color="NAME_CONTRACT_TYPE",
-            color_discrete_map={
-                "Cash loans":"#3D4F4A",
-                "Revolving loans":"#61867B"
-            }
-        )
+    fig_lti = px.bar(
+        loan_income,
+        x="LOAN_TO_INCOME",
+        y="NAME_INCOME_TYPE",
+        orientation="h",
+        title="Avg Loan To Income by Type",
+        color_discrete_sequence=["#3D4F4A"])
 
-        fig_loan = apply_theme(fig_loan)
+    fig_lti = apply_theme(fig_lti)
 
-        st.plotly_chart(
-            fig_loan,
-            use_container_width=True
-        )
+    st.plotly_chart(
+        fig_lti,
+        use_container_width=True
+    )
 
-        ### High Risk Exposure by Income Type
-        high_risk_credit = (
-        exec_df[exec_df["RISK_SEGMENT"] == "High Risk"]
-        .groupby("NAME_INCOME_TYPE")["AMT_CREDIT"]
+    ## Exposure by Loan Type
+
+    loan_exposure = (
+    exec_df.groupby(
+        "NAME_CONTRACT_TYPE",
+        observed=False
+    )["AMT_CREDIT"]
+    .sum()
+    .reset_index()
+    )
+
+    fig_loan = px.pie(
+        loan_exposure,
+        names="NAME_CONTRACT_TYPE",
+        values="AMT_CREDIT",
+        hole=0.6,
+        title="Exposure by Loan Type",
+        color="NAME_CONTRACT_TYPE",
+        color_discrete_map={
+            "Cash loans":"#3D4F4A",
+            "Revolving loans":"#61867B"
+        }
+    )
+
+    fig_loan = apply_theme(fig_loan)
+
+    st.plotly_chart(
+        fig_loan,
+        use_container_width=True
+    )
+
+    ### High Risk Exposure by Income Type
+    high_risk_credit = (
+    exec_df[exec_df["RISK_SEGMENT"] == "High Risk"]
+    .groupby("NAME_INCOME_TYPE")["AMT_CREDIT"]
+    .sum()
+    )
+
+    total_credit = (
+        exec_df.groupby("NAME_INCOME_TYPE")["AMT_CREDIT"]
         .sum()
-        )
+    )
 
-        total_credit = (
-            exec_df.groupby("NAME_INCOME_TYPE")["AMT_CREDIT"]
-            .sum()
-        )
+    risk_tree = (
+        (high_risk_credit / total_credit * 100)
+        .reset_index(name="HIGH_RISK_EXPOSURE_PCT")
+    )
 
-        risk_tree = (
-            (high_risk_credit / total_credit * 100)
-            .reset_index(name="HIGH_RISK_EXPOSURE_PCT")
-        )
+    fig_tree = px.treemap(
+    risk_tree,
+    path=["NAME_INCOME_TYPE"],
+    values="HIGH_RISK_EXPOSURE_PCT",
+    title="High Risk Exposure %",
+    color="HIGH_RISK_EXPOSURE_PCT",
+    color_continuous_scale="Greens"
+    )
 
-        fig_tree = px.treemap(
-        risk_tree,
-        path=["NAME_INCOME_TYPE"],
-        values="HIGH_RISK_EXPOSURE_PCT",
-        title="High Risk Exposure %",
-        color="HIGH_RISK_EXPOSURE_PCT",
-        color_continuous_scale="Greens"
-        )
+    fig_tree = apply_theme(fig_tree)
 
-        fig_tree = apply_theme(fig_tree)
+    st.plotly_chart(
+        fig_tree,
+        use_container_width=True
+    )
+    
+    ### Loan size distribution
 
-        st.plotly_chart(
-            fig_tree,
-            use_container_width=True
-        )
-        
-        ### Loan size distribution
-
-        portfolio = exec_df[
+    portfolio = exec_df[
         exec_df["AMT_CREDIT"].notna()
-    ].copy()
+        ].copy()
 
     portfolio["LOAN_BUCKET"] = pd.cut(
         portfolio["AMT_CREDIT"],
@@ -969,7 +975,7 @@ with tab2:
             "500K-1M",
             "1M+"
         ]
-    )
+        )
 
     loan_size = (
         portfolio.groupby(
