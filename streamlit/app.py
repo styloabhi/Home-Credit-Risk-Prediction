@@ -1119,40 +1119,42 @@ with tab4:
         f"Current Threshold: {selected_threshold:.2f}"
     )
 
-    if st.button(
-        "Predict Default Risk",
-        use_container_width=True
-    ):
+    if st.button("Predict Default Risk", use_container_width=True):
 
-        X = customer_data.drop(
-            columns=["SK_ID_CURR"],
-            errors="ignore"
-        )
+        st.write("✅ Step 1: Button clicked")
 
-        missing_cols = [
-            col for col in feature_cols
-            if col not in X.columns
-        ]
+        X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore")
+        st.write(f"✅ Step 2: X shape = {X.shape}")
+
+        missing_cols = [col for col in feature_cols if col not in X.columns]
+        st.write(f"✅ Step 3: Missing cols = {len(missing_cols)}")
 
         if missing_cols:
-            st.error(
-                f"Missing {len(missing_cols)} model features."
-            )
+            st.error(f"Missing {len(missing_cols)} model features.")
             st.stop()
 
         X = X[feature_cols]
+        st.write(f"✅ Step 4: Features selected, shape = {X.shape}")
+
         try:
-            st.write("Running CatBoost")
+            st.write("⏳ Step 5: Running CatBoost...")
             cat_prob = float(cat_model.predict_proba(X)[:, 1])
-            st.write("Running LightGBM")
+            st.write(f"✅ Step 5 done: {cat_prob:.4f}")
+
+            st.write("⏳ Step 6: Running LightGBM...")
             lgb_prob = float(lgb_model.predict_proba(X)[:, 1])
-            st.write("Running XGBoost")
+            st.write(f"✅ Step 6 done: {lgb_prob:.4f}")
+
+            st.write("⏳ Step 7: Running XGBoost...")
             xgb_prob = float(xgb_model.predict_proba(X)[:, 1])
-            st.write("Models Complete")
+            st.write(f"✅ Step 7 done: {xgb_prob:.4f}")
+
         except Exception as e:
-            st.error(f"Prediction Error:{e}")
+            st.error(f"💥 Crashed at model prediction: {e}")
             st.exception(e)
             st.stop()
+
+        st.write("✅ Step 8: All models done")
 
         probability = (
             cat_prob * ensemble_info["cat_weight"]
