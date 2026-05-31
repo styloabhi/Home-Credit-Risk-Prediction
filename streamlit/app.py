@@ -1112,11 +1112,14 @@ with tab4:
 
         X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore")
     
+        # convert category dtype back to string to avoid CatBoost error
+        for col in X.select_dtypes(include='category').columns:
+            X[col] = X[col].astype(str)
         for col, encoder in encoders.items():
-            if col in test.columns:
+            if col in X.columns:
                 try:
-                    test[col] = encoder.transform(
-                    test[col].astype(str))
+                    X[col] = encoder.transform(
+                    X[col].astype(str))
                 except:
                     pass
 
