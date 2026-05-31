@@ -1075,14 +1075,15 @@ with tab4:
     except Exception as e:
         st.error(f"Model loading failed: {e}")
 
-    test=test.copy()
-    for col, encoder in encoders.items():
-
-        if col in test.columns:
-
-            test[col] = encoder.transform(
-                test[col].astype(str)
-            )
+    try:
+        for col, encoder in encoders.items():
+            if col in test.columns:
+                test[col] = encoder.transform(
+                    test[col].astype(str)
+                )
+    except Exception as e:
+        st.error(f"Encoding failed:{e}")
+        st.stop()
 
 
 
