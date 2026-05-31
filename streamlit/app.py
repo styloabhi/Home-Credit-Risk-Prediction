@@ -1138,15 +1138,18 @@ with tab4:
 
         try:
             st.write("⏳ Step 5: Running CatBoost...")
-            cat_prob = float(cat_model.predict_proba(X)[:, 1])
+            cat_raw = cat_model.predict_proba(X)
+            cat_prob = float(np.array(cat_raw).flatten()[1])
             st.write(f"✅ Step 5 done: {cat_prob:.4f}")
 
             st.write("⏳ Step 6: Running LightGBM...")
-            lgb_prob = float(lgb_model.predict_proba(X)[:, 1])
+            lgb_raw = lgb_model.predict_proba(X)
+            lgb_prob = float(np.array(lgb_raw).flatten()[1])
             st.write(f"✅ Step 6 done: {lgb_prob:.4f}")
 
             st.write("⏳ Step 7: Running XGBoost...")
-            xgb_prob = float(xgb_model.predict_proba(X)[:, 1])
+            xgb_raw = xgb_model.predict_proba(X)
+            xgb_prob = float(np.array(xgb_raw).flatten()[1])
             st.write(f"✅ Step 7 done: {xgb_prob:.4f}")
 
         except Exception as e:
