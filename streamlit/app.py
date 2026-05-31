@@ -11,6 +11,9 @@ import plotly.graph_objects as go
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+from pathlib import Path
+import toml
+
 import joblib
 
 st.set_page_config(
@@ -19,8 +22,20 @@ st.set_page_config(
     layout="wide"
 )
 
-USERNAME = st.secrets["username"]
-PASSWORD = st.secrets["password"]
+try:
+    USERNAME = st.secrets["username"]
+    PASSWORD = st.secrets["password"]
+
+except Exception:
+
+    secrets_path= (
+        Path(__file__).parent
+        /".streamlit"
+        /"secrets.toml"
+    )
+    secrets = toml.load(secrets_path)
+    USERNAME = secrets["username"]
+    PASSWORD = secrets["password"]
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
