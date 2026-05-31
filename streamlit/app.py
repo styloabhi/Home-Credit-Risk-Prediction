@@ -279,14 +279,40 @@ def load_data():
     return train, test
 
 
+## memory reduction
+def reduce_mem_usage(df):
 
+    for col in df.columns:
+
+        col_type = df[col].dtype
+
+        if str(col_type)[:3] == "int":
+
+            c_min = df[col].min()
+            c_max = df[col].max()
+
+            if c_min >= np.iinfo(np.int8).min and c_max <= np.iinfo(np.int8).max:
+                df[col] = df[col].astype(np.int8)
+
+            elif c_min >= np.iinfo(np.int16).min and c_max <= np.iinfo(np.int16).max:
+                df[col] = df[col].astype(np.int16)
+
+            elif c_min >= np.iinfo(np.int32).min and c_max <= np.iinfo(np.int32).max:
+                df[col] = df[col].astype(np.int32)
+
+        elif str(col_type)[:5] == "float":
+
+            df[col] = df[col].astype(np.float32)
+
+    return df
 
 try:
     train, test = load_data()
 except Exception as e:
     st.error(f"Data loading failed:{e}")
     st.stop()
-
+train = reduce_mem_usage(train)
+test = reduce_mem_usage(test)
 train["RISK_SEGMENT"] = np.where(
     train['EXT_SOURCE_MEAN']<0.4, "High Risk",
     np.where(
@@ -338,27 +364,6 @@ def load_models():
         model_metrics
     )
 
-try:
-    (
-    cat_model,
-    lgb_model,
-    xgb_model,
-    feature_cols,
-    ensemble_info,
-    encoders,
-    model_metrics
-    ) = load_models()
-except Exception as e:
-    st.error(f"Model loading failed: {e}")
-
-test=test.copy()
-for col, encoder in encoders.items():
-
-    if col in test.columns:
-
-        test[col] = encoder.transform(
-            test[col].astype(str)
-        )
 
 
 ### slicers
@@ -393,7 +398,7 @@ loan_filter = st.sidebar.multiselect(
     sorted(train['NAME_CONTRACT_TYPE'].dropna().unique())
 )
 
-exec_df= train.copy()
+exec_df= train
 # apply filters to the executive dashboard dataframe
 if org_filter:
     exec_df=exec_df[
@@ -434,7 +439,7 @@ with tab1:
         st.metric("Total Customers", millify(len(exec_df))
                   )
     with c2:
-        st.metric("Default Rate %", round(exec_df['TARGET'].mean()*100,2))
+        st.metric("Default Rate %", f"{exec_df['TARGET'].mean()*100:.2f}%")
 
     with c3: 
         st.metric("Total Credit Exposure",
@@ -450,37 +455,36 @@ with tab1:
 
         st.metric(
             "approval_rate %",
-            round(approval_rate,2)
+            f"{approval_rate:.2f}%"
         )
 
     with c5:
         st.metric(
             "Bad Borrowers EXT",
-            round(exec_df.loc[
+            f"{exec_df.loc[
             exec_df['TARGET']==1,
             "EXT_SOURCE_MEAN"
-            ].mean(),2)
+            ].mean():.2f}"
         )
     with c6:
         st.metric(
             "Good Borrowers EXT",
-            round(exec_df.loc[
+            f"{exec_df.loc[
             exec_df['TARGET']==0,
             "EXT_SOURCE_MEAN"
-            ].mean(),2)
+            ].mean():.2f}"
         )
     with c7:
         st.metric(
             "High Risk Customers %",
-            round((exec_df['RISK_SEGMENT']=='High Risk').mean()*100,2))
+            f"{((exec_df['RISK_SEGMENT']=='High Risk').mean()*100):.2f}")
     with c8:
         st.metric(
             "High Risk Exposure",
-            round(exec_df.loc[
+            f"{exec_df.loc[
                 exec_df["RISK_SEGMENT"]=="High Risk",
                 "AMT_CREDIT"].sum()/
-                exec_df["AMT_CREDIT"].sum()*100,2
-            )
+                exec_df["AMT_CREDIT"].sum()*100:.2f}%"
         )
         
     st.divider()
@@ -658,12 +662,12 @@ with tab2:
     with col1:
         st.metric(
             "Avg Payment Delay Days",
-            round(exec_df['AVG_PAYMENT_DELAY'].mean(),2)
+            f"{exec_df['AVG_PAYMENT_DELAY'].mean():.2f}"
         )
     with col2:
         st.metric(
             "Delinquency Ratio %",
-            round(exec_df['AVG_DPD_RATIO'].mean()*100,2)
+            f"{exec_df['AVG_DPD_RATIO'].mean()*100:.2f}%"
         )
     with col3:
         st.metric(
@@ -673,7 +677,7 @@ with tab2:
     with col4:
         st.metric(
             "AVG Credit Utilization %",
-            round(exec_df['AVG_LIMIT_USAGE_RATIO'].mean()*100,2)
+            f"{exec_df['AVG_LIMIT_USAGE_RATIO'].mean()*100:.2f}%"
         )
         
     with col5:
@@ -681,12 +685,12 @@ with tab2:
                         total_prev * 100)if total_prev > 0 else 0
         st.metric(
             "Previous Refusal Rate %",
-            round(refusal_rate,2)
+            f"{refusal_rate:.2f}%"
         )
     with col6:
         st.metric(
             "avg_active_credit",
-            round(exec_df["ACTIVE_CREDIT_COUNT"].mean(),2)
+            f"{exec_df["ACTIVE_CREDIT_COUNT"].mean():.2f}"
         )
     st.divider()
 
@@ -844,28 +848,24 @@ with tab3:
     with p4:
         st.metric(
             "High Risk Exposure %",
-            round(
+            f"{
                 exec_df.loc[
                     exec_df['RISK_SEGMENT']=='High Risk',
                     "AMT_CREDIT"
                 ].sum()/
-                exec_df['AMT_CREDIT'].sum()*100,
-                2
-            )
+                exec_df['AMT_CREDIT'].sum()*100:.2f}%"
         )
 
     with p5:
         st.metric(
             "Avg Loan to Income",
-            round(exec_df['LOAN_TO_INCOME'].mean(),2)
+            f"{exec_df['LOAN_TO_INCOME'].mean():.2f}"
         )
     with p6:
         st.metric(
             "Portfolio At Risk %",
-            round(
-                (exec_df['TARGET']==1).mean()*100,2
+            f"{(exec_df['TARGET']==1).mean()*100:.2f}"
             )
-        )
     st.divider()
 
     ### visuals
@@ -1060,6 +1060,32 @@ with tab4:
 
     st.header("Customer Default Predictor")
 
+
+
+    try:
+        (
+        cat_model,
+        lgb_model,
+        xgb_model,
+        feature_cols,
+        ensemble_info,
+        encoders,
+        model_metrics
+        ) = load_models()
+    except Exception as e:
+        st.error(f"Model loading failed: {e}")
+
+    test=test.copy()
+    for col, encoder in encoders.items():
+
+        if col in test.columns:
+
+            test[col] = encoder.transform(
+                test[col].astype(str)
+            )
+
+
+
     customer_id = st.selectbox(
         "Select Customer ID",
         sorted(test["SK_ID_CURR"].unique())
@@ -1100,10 +1126,7 @@ with tab4:
     with c4:
         st.metric(
             "Loan To Income",
-            round(
-                customer_data["LOAN_TO_INCOME"].iloc[0],
-                2
-            )
+            f"{customer_data['LOAN_TO_INCOME'].iloc[0]:.2f}"
         )
 
     st.divider()
@@ -1309,7 +1332,7 @@ with tab4:
             if use_millify:
                 return millify(value)
 
-            return round(value, decimals)
+            return f"{value:.{decimals}f}"
         
         with c1:
             st.metric(
