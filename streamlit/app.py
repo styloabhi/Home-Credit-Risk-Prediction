@@ -1048,17 +1048,6 @@ with tab4:
     except Exception as e:
         st.error(f"Model loading failed: {e}")
 
-    try:
-        for col, encoder in encoders.items():
-            if col in test.columns:
-                test[col] = encoder.transform(
-                    test[col].astype(str)
-                )
-    except Exception as e:
-        st.error(f"Encoding failed:{e}")
-        st.stop()
-
-
 
     customer_id = st.selectbox(
         "Select Customer ID",
@@ -1122,6 +1111,14 @@ with tab4:
     if st.button("Predict Default Risk", use_container_width=True):
 
         X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore")
+    
+        for col, encoder in encoders.items():
+            if col in test.columns:
+                try:
+                    test[col] = encoder.transform(
+                    test[col].astype(str))
+                except:
+                    pass
 
         missing_cols = [col for col in feature_cols if col not in X.columns]
 
@@ -1319,12 +1316,8 @@ with tab4:
                 )
             )
 
-            st.metric(
-                "Active Credits",
-                safe_metric(int(
-                    customer_data["ACTIVE_CREDIT_COUNT"].iloc[0]
-                ))
-            )
+            val = customer_data["ACTIVE_CREDIT_COUNT"].iloc[0]
+            st.metric("Active Credits", "N/A" if pd.isna(val) else str(int(val)))
 
         with c2:
             st.metric(
