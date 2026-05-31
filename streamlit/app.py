@@ -279,40 +279,13 @@ def load_data():
     return train, test
 
 
-## memory reduction
-def reduce_mem_usage(df):
-
-    for col in df.columns:
-
-        col_type = df[col].dtype
-
-        if str(col_type)[:3] == "int":
-
-            c_min = df[col].min()
-            c_max = df[col].max()
-
-            if c_min >= np.iinfo(np.int8).min and c_max <= np.iinfo(np.int8).max:
-                df[col] = df[col].astype(np.int8)
-
-            elif c_min >= np.iinfo(np.int16).min and c_max <= np.iinfo(np.int16).max:
-                df[col] = df[col].astype(np.int16)
-
-            elif c_min >= np.iinfo(np.int32).min and c_max <= np.iinfo(np.int32).max:
-                df[col] = df[col].astype(np.int32)
-
-        elif str(col_type)[:5] == "float":
-
-            df[col] = df[col].astype(np.float32)
-
-    return df
 
 try:
     train, test = load_data()
 except Exception as e:
     st.error(f"Data loading failed:{e}")
     st.stop()
-train = reduce_mem_usage(train)
-test = reduce_mem_usage(test)
+
 train["RISK_SEGMENT"] = np.where(
     train['EXT_SOURCE_MEAN']<0.4, "High Risk",
     np.where(
