@@ -1,313 +1,123 @@
-# Home Credit Default Risk Prediction
+# Home Credit Pipeline Automation
 
-## Business Context
+## Overview
 
-Home Credit aims to expand financial inclusion by providing loans to individuals with limited or no credit history.
+This pipeline is part of the Home Credit Default Risk Prediction project.
 
-The challenge is to identify customers who are likely to default on their loans while ensuring that creditworthy applicants are not rejected.
+The main project focuses on predicting customer loan default risk using machine learning, business intelligence dashboards, and automated data processing.
 
-This project combines business analytics, data visualization, machine learning, and dashboarding to support data-driven lending decisions.
-
----
-
-## Business Problem
-
-Financial institutions face significant losses due to loan defaults.
-
-The objective of this project is to:
-
-* Predict customer default risk
-* Identify key drivers of default
-* Generate actionable business insights
-* Support decision-making through dashboards and visual analytics
+This folder contains the automation pipeline used to execute the project workflow efficiently.
 
 ---
 
-## Project Objective
+## Purpose
 
-The primary objective of this project is to develop a data-driven solution that helps Home Credit identify customers at risk of loan default while providing actionable business insights through data analysis, dashboards, and machine learning models.
+The objective of the pipeline is to automate repetitive tasks involved in the machine learning workflow.
 
----
-
-## Key Deliverables
-
-* Data Cleaning & Preparation
-* Exploratory Data Analysis (EDA)
-* Business Insights & Recommendations
-* Power BI Dashboard
-* Streamlit Dashboard
-* Machine Learning Models
-* Automated Pipeline
-* Final Project Presentation (PPT)
+Instead of manually running multiple notebooks and scripts, the pipeline executes the required steps in sequence and generates the final outputs.
 
 ---
 
-## Dataset Description
+## Pipeline Workflow
 
-The project uses the Home Credit Default Risk dataset.
-
-### Main Tables
-
-* Application Train
-* Application Test
-* Bureau
-* Bureau Balance
-* Previous Application
-* Installments Payments
-* Credit Card Balance
-* POS Cash Balance
-
----
-
-## Data Dictionary
-
-The dataset contains customer information related to:
-
-* Demographics
-* Income
-* Employment
-* Credit History
-* Loan Applications
-* Installment Payments
-* Credit Card Usage
-
----
-
-## Project Workflow
-
-```text
-Business Understanding
-        ↓
-Data Exploration
-        ↓
+Raw Data
+↓
 Data Cleaning
-        ↓
-Exploratory Data Analysis
-        ↓
+↓
 Feature Engineering
-        ↓
-Machine Learning
-        ↓
-Business Insights
-        ↓
-Dashboard Development
-        ↓
-Presentation & Recommendations
-```
+↓
+Model Training
+↓
+Model Evaluation
+↓
+Output Generation
 
 ---
 
-## Exploratory Data Analysis
+## Components
 
-EDA was performed to:
+### pipeline.py
 
-* Understand customer characteristics
-* Analyze default patterns
-* Identify high-risk customer segments
-* Discover relationships between variables
-* Generate business insights
+Main Python script responsible for:
 
-### Areas Explored
+* Loading raw datasets
+* Executing preprocessing steps
+* Running feature engineering
+* Training machine learning models
+* Saving outputs and artifacts
 
-* Income Analysis
-* Employment Analysis
-* Credit Analysis
-* Family Characteristics
-* Housing Characteristics
-* Loan Repayment Behavior
-* Bureau Credit History
+### pipeline.bat
+
+Windows batch file used to execute the pipeline with a single click.
 
 ---
 
-## Business Insights
+## Input Data
 
-Key insights were extracted from EDA and dashboard analysis.
+The pipeline uses Home Credit datasets including:
 
-Examples include:
-
-* High credit burden customers exhibit higher default rates.
-* Certain income categories demonstrate elevated risk.
-* Historical repayment behavior is a strong predictor of default.
-* Previous loan performance significantly impacts future default probability.
-
----
-
-## Business Recommendations
-
-### Risk Management
-
-* Strengthen screening for high-risk applicants.
-* Introduce risk-based lending strategies.
-
-### Customer Segmentation
-
-* Create customer risk tiers.
-* Develop differentiated lending policies.
-
-### Credit Monitoring
-
-* Monitor customers with adverse credit history.
-* Implement early warning systems.
+* Application Data
+* Bureau Data
+* Previous Application Data
+* Installment Payment Data
+* Credit Card Balance Data
+* POS Cash Balance Data
 
 ---
 
-## Machine Learning Solution
+## Generated Outputs
 
-### Models Developed
+The pipeline produces:
 
-* LightGBM
+* Cleaned datasets
+* Engineered features
+* Trained machine learning models
+* Evaluation metrics
+* Model artifacts for deployment
+
+---
+
+## Machine Learning Models
+
+The project pipeline supports:
+
 * CatBoost
+* LightGBM
 * XGBoost
-* Ensemble Model
 
-### Objective
-
-Predict the probability of customer loan default using demographic, financial, and credit history information.
+The final prediction system uses an ensemble approach combining all three models.
 
 ---
 
-## Dashboards
+## How to Run
 
-### Power BI Dashboard
-
-Includes:
-
-* Portfolio Overview
-* Default Analysis
-* Customer Segmentation
-* Risk Distribution
-* Credit Profile Analysis
-
-### Streamlit Dashboard
-
-Provides:
-
-* Interactive exploration
-* Customer-level insights
-* Risk analysis
-* Model predictions and visualizations
-
----
-
-## Presentation Deliverables
-
-### EDA Presentation
-
-* Dataset Overview
-* Exploratory Analysis
-* Key Insights
-* Business Findings
-
-### Business Presentation
-
-* Problem Statement
-* Findings
-* Recommendations
-* Strategic Impact
-
----
-
-## Automation Pipeline
-
-The project includes an automated pipeline that executes:
-
-1. Data Cleaning & EDA Notebook
-2. Feature Engineering & ML Notebook
-
-### Pipeline Components
-
-* pipeline.py
-* pipeline.bat
-
----
-
-## Installation
-
-Install the required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
----
-
-## Run Pipeline
-
-### Option 1
+### Option 1: Python
 
 ```bash
 python pipeline.py
 ```
 
-### Option 2
+### Option 2: Batch File
 
-Double-click:
-
-```text
+```bash
 pipeline.bat
 ```
 
 ---
 
-## Technologies Used
+## Project Context
 
-* Python
-* Pandas
-* NumPy
-* Matplotlib
-* Seaborn
-* Scikit-Learn
-* LightGBM
-* XGBoost
-* CatBoost
-* Optuna
-* Power BI
-* Streamlit
-* Jupyter Notebook
+This pipeline is a component of the larger Home Credit Default Risk Prediction project, which includes:
 
----
-
-## Project Outputs
-
-### Analytics Deliverables
-
-* Data Cleaning Report
 * Exploratory Data Analysis
-* Business Insights
-* Business Recommendations
-
-### Dashboard Deliverables
-
-* Power BI Dashboard
-* Streamlit Dashboard
-
-### Machine Learning Deliverables
-
-* LightGBM Model
-* CatBoost Model
-* XGBoost Model
-* Ensemble Model
-
-### Presentation Deliverables
-
-* EDA Presentation
-* Business Presentation
-* Final Project PPT
-
----
-
-## Future Enhancements
-
-* Model Deployment
-* Real-Time Prediction System
-* Automated Monitoring Dashboard
-* MLOps Integration
-* Cloud Deployment
+* Feature Engineering
+* Machine Learning
+* Power BI Dashboards
+* Streamlit Dashboard Application
+* Business Insights and Recommendations
 
 ---
 
 ## Author
 
-**Abhishek Kumar Pandey**
-
-Data Science Capstone Project – Home Credit Default Risk Prediction
+Abhishek Kumar Pandey
