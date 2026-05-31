@@ -1121,10 +1121,7 @@ with tab4:
 
     if st.button("Predict Default Risk", use_container_width=True):
 
-        st.write("✅ Step 1: Button clicked")
-
         X = customer_data.drop(columns=["SK_ID_CURR"], errors="ignore")
-        st.write(f"✅ Step 2: X shape = {X.shape}")
 
         missing_cols = [col for col in feature_cols if col not in X.columns]
         st.write(f"✅ Step 3: Missing cols = {len(missing_cols)}")
@@ -1134,23 +1131,19 @@ with tab4:
             st.stop()
 
         X = X[feature_cols]
-        st.write(f"✅ Step 4: Features selected, shape = {X.shape}")
 
         try:
             st.write("⏳ Step 5: Running CatBoost...")
             cat_raw = cat_model.predict_proba(X)
             cat_prob = float(np.array(cat_raw).flatten()[1])
-            st.write(f"✅ Step 5 done: {cat_prob:.4f}")
 
             st.write("⏳ Step 6: Running LightGBM...")
             lgb_raw = lgb_model.predict_proba(X)
             lgb_prob = float(np.array(lgb_raw).flatten()[1])
-            st.write(f"✅ Step 6 done: {lgb_prob:.4f}")
 
             st.write("⏳ Step 7: Running XGBoost...")
             xgb_raw = xgb_model.predict_proba(X)
             xgb_prob = float(np.array(xgb_raw).flatten()[1])
-            st.write(f"✅ Step 7 done: {xgb_prob:.4f}")
 
         except Exception as e:
             st.error(f"💥 Crashed at model prediction: {e}")
