@@ -1,0 +1,37 @@
+# Secrets
+streamlit/.streamlit/secrets.toml
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Jupyter
+.ipynb_checkpoints/
+
+# VS Code
+.vscode/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# Large data files
+*.csv
+*.zip
+
+# Generated notebook exports
+*.converted.py
+
+# Misc
+.DS_Store
+
+catboost_info/
+*.tsv
+*.tfevents
