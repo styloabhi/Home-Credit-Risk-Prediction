@@ -1168,14 +1168,20 @@ with tab4:
             st.stop()
 
         X = X[feature_cols]
+        try:
+            st.write("Running CatBoost")
+            cat_prob = float(cat_model.predict_proba(X)[:, 1])
+            st.write("Running LightGBM")
+            lgb_prob = float(lgb_model.predict_proba(X)[:, 1])
+            st.write("Running XGBoost")
+            xgb_prob = float(xgb_model.predict_proba(X)[:, 1])
+            st.write("Models Complete")
+        except Exception as e:
+            st.error(f"Prediction Error:{e}")
+            st.exception(e)
+            st.stop()
 
-        cat_prob = cat_model.predict_proba(X)[:, 1]
-
-        lgb_prob = lgb_model.predict_proba(X)[:, 1]
-
-        xgb_prob = xgb_model.predict_proba(X)[:, 1]
-
-        probability = float(
+        probability = (
             cat_prob * ensemble_info["cat_weight"]
             +
             lgb_prob * ensemble_info["lgb_weight"]
