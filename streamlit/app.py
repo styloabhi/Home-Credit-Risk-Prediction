@@ -1130,26 +1130,16 @@ with tab4:
             st.stop()
 
         X = X[feature_cols]
+        st.write(X.dtypes[X.dtypes == 'object'].to_dict())
 
         try:
-            st.write("⏳ Step 1: Running CatBoost...")
-            cat_raw = cat_model.predict_proba(X)
-            cat_prob = float(np.array(cat_raw).flatten()[1])
-
-            st.write("⏳ Step 2: Running LightGBM...")
-            lgb_raw = lgb_model.predict_proba(X)
-            lgb_prob = float(np.array(lgb_raw).flatten()[1])
-
-            st.write("⏳ Step 3: Running XGBoost...")
-            xgb_raw = xgb_model.predict_proba(X)
-            xgb_prob = float(np.array(xgb_raw).flatten()[1])
-
+            cat_prob = float(np.array(cat_model.predict_proba(X)).flatten()[1])
+            lgb_prob = float(np.array(lgb_model.predict_proba(X)).flatten()[1])
+            xgb_prob = float(np.array(xgb_model.predict_proba(X)).flatten()[1])
         except Exception as e:
-            st.error(f"💥 Crashed at model prediction: {e}")
+            st.error(f"Prediction Error: {e}")
             st.exception(e)
             st.stop()
-
-        st.write("✅ All models done")
 
         probability = (
             cat_prob * ensemble_info["cat_weight"]
