@@ -1139,7 +1139,6 @@ with tab4:
         except Exception as e:
             st.error(f"Prediction Error: {e}")
             st.exception(e)
-            st.stop()
 
         probability = (
             cat_prob * ensemble_info["cat_weight"]
