@@ -23,59 +23,6 @@ st.set_page_config(
     layout="wide"
 )
 
-try:
-    USERNAME = st.secrets["username"]
-    PASSWORD = st.secrets["password"]
-
-except Exception:
-
-    secrets_path= (
-        Path(__file__).parent
-        /".streamlit"
-        /"secrets.toml"
-    )
-    secrets = toml.load(secrets_path)
-    USERNAME = secrets["username"]
-    PASSWORD = secrets["password"]
-
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-
-if not st.session_state.logged_in:
-
-    st.title("🔐 Login")
-
-    username = st.text_input("User ID")
-    password = st.text_input(
-        "Password",
-        type="password"
-    )
-
-    if st.button("Login"):
-
-        if (
-            username == USERNAME
-            and password == PASSWORD
-        ):
-
-            st.session_state.logged_in = True
-            st.rerun()
-
-        else:
-
-            st.error(
-                "Invalid User ID or Password"
-            )
-
-    st.stop()
-st.sidebar.success(
-    f"Logged in as {USERNAME}"
-)
-
-if st.sidebar.button("Logout"):
-    st.session_state.logged_in = False
-    st.rerun()
-
 ### Custom CSS for Streamlit App ###
 
 st.markdown("""
@@ -199,6 +146,61 @@ div[aria-selected="true"]{
 
 </style>
 """, unsafe_allow_html=True)
+
+try:
+    USERNAME = st.secrets["username"]
+    PASSWORD = st.secrets["password"]
+
+except Exception:
+
+    secrets_path= (
+        Path(__file__).parent
+        /".streamlit"
+        /"secrets.toml"
+    )
+    secrets = toml.load(secrets_path)
+    USERNAME = secrets["username"]
+    PASSWORD = secrets["password"]
+
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
+
+if not st.session_state.logged_in:
+
+    st.title("🔐 Login")
+
+    username = st.text_input("User ID")
+    password = st.text_input(
+        "Password",
+        type="password"
+    )
+
+    if st.button("Login"):
+
+        if (
+            username == USERNAME
+            and password == PASSWORD
+        ):
+
+            st.session_state.logged_in = True
+            st.rerun()
+
+        else:
+
+            st.error(
+                "Invalid User ID or Password"
+            )
+
+    st.stop()
+st.sidebar.success(
+    f"Logged in as {USERNAME}"
+)
+
+if st.sidebar.button("Logout"):
+    st.session_state.logged_in = False
+    st.rerun()
+
+
 
 ### Plotly Template for Consistent Styling ###
 
