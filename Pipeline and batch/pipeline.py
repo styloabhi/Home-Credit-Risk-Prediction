@@ -30,9 +30,8 @@ print("Running EDA Notebook...")
 eda_result=subprocess.run([
     "jupyter",
     "nbconvert",
-    "--to",
-    "notebook",
     "--execute",
+    "--inplace",
     str(EDA_NOTEBOOK)
 ])
 if eda_result.returncode!=0:
@@ -43,9 +42,8 @@ print("Running ML Notebook...")
 ml_result=subprocess.run([
     "jupyter",
     "nbconvert",
-    "--to",
-    "notebook",
     "--execute",
+    "--inplace",
     str(ML_NOTEBOOK)
 ])
 if ml_result.returncode!=0:
